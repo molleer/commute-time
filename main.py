@@ -43,7 +43,16 @@ def get_shortest_time(origin: str, destination: str) -> None:
         if shortes_time == -1 or total_time < shortes_time:
             shortes_time = total_time
 
-    print(";".join([datetime.datetime.now().isoformat(), str(shortes_time)]))
+    print(
+        ";".join(
+            [
+                datetime.datetime.now().isoformat(),
+                origin,
+                destination,
+                str(shortes_time),
+            ]
+        )
+    )
 
 
 if __name__ == "__main__":
