@@ -1,0 +1,4 @@
+pydantic
+python-dotenv
+pycli2
+requests
