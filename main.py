@@ -10,17 +10,20 @@ load_dotenv()
 
 def get_shortest_time(origin: str, destination: str) -> None:
     with requests.post(
-        "https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix",
+        "https://routes.googleapis.com/directions/v2:computeRoutes",
         json={
-            "origins": [{"waypoint": {"address": origin}}],
-            "destinations": [{"waypoint": {"address": destination}}],
+            "origin": {"address": origin},
+            "destination": {"address": destination},
+            "routingPreference": "TRAFFIC_AWARE_OPTIMAL",
+            "trafficModel": "BEST_GUESS",
+            "travelMode": "DRIVE",
         },
-        params={"key": os.environ["API_KEY"], "$fields": "duration"},
+        params={"key": os.environ["API_KEY"], "$fields": "routes"},
     ) as response:
         response.raise_for_status()
 
         data = response.json()
-        if not data:
+        if not data["routes"]:
             logging.error("Failed to fine route")
             exit(1)
 
@@ -30,7 +33,7 @@ def get_shortest_time(origin: str, destination: str) -> None:
                 datetime.datetime.now().isoformat(),
                 origin,
                 destination,
-                data[0]["duration"],
+                data["routes"][0]["staticDuration"],
             ]
         )
     )
