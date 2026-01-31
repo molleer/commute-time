@@ -8,7 +8,7 @@ def avg(nums: list[int]) -> float:
 
 
 def format(file: Path) -> None:
-    rolling_average = [0] * 3
+    rolling_average: list[int] = []
     lines: list[list[str]] = [line.split(";") for line in file.read_text().splitlines()]
     groups: dict[int, dict[str, dict[str, list[float]]]] = {}
 
@@ -19,7 +19,9 @@ def format(file: Path) -> None:
         origin = row[1]
         duration = int(row[3][:-1])
         rolling_average.append(duration)
-        rolling_average.pop(0)
+
+        if len(rolling_average) > 3:
+            rolling_average.pop(0)
 
         weekday = time.weekday()
         clock = time.astimezone().strftime("%H:%M")
@@ -49,8 +51,8 @@ def format(file: Path) -> None:
             ]
         )
     )
-    for clock, times in table.items():
-        print(";".join([clock, *times]))
+    for clock in sorted(table):
+        print(";".join([clock, *table[clock]]))
 
 
 if __name__ == "__main__":
